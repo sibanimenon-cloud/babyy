@@ -14,14 +14,8 @@ color:white;
 text-align:center;
 }
 
-.page{
-display:none;
-padding:30px;
-}
-
-.active{
-display:block;
-}
+.page{display:none;padding:30px;}
+.active{display:block;}
 
 .btn{
 padding:12px 18px;
@@ -38,9 +32,8 @@ margin:10px;
 border-radius:15px;
 }
 
-/* CANDLE */
+/* candle */
 .candle{
-width:100%;
 height:60vh;
 display:flex;
 justify-content:center;
@@ -54,7 +47,6 @@ height:240px;
 background:#fff3d6;
 border-radius:15px;
 position:relative;
-box-shadow:0 0 25px rgba(255,255,255,0.3);
 }
 
 .flame{
@@ -70,24 +62,23 @@ animation:flicker 0.8s infinite;
 }
 
 @keyframes flicker{
-0%{transform:translateX(-50%) scale(1);opacity:1;}
-50%{transform:translateX(-50%) scale(1.2);opacity:0.6;}
-100%{transform:translateX(-50%) scale(1);opacity:1;}
+0%{transform:translateX(-50%) scale(1);}
+50%{transform:translateX(-50%) scale(1.2);}
+100%{transform:translateX(-50%) scale(1);}
 }
 
-/* HEART GAME */
+/* hearts */
 .heart{
 font-size:32px;
 position:absolute;
-cursor:pointer;
 animation:float 3s linear;
+cursor:pointer;
 }
 
 #gameArea{
 position:relative;
 height:300px;
 overflow:hidden;
-margin-top:20px;
 }
 
 @keyframes float{
@@ -99,13 +90,13 @@ margin-top:20px;
 
 <body>
 
-<div id="page1" class="page active">
-<h1>Your Memory Space</h1>
-<button class="btn" onclick="next(2)">Start</button>
+<div id="p1" class="page active">
+<h1>Memory Space</h1>
+<button class="btn" onclick="go(2)">Start</button>
 </div>
 
-<div id="page2" class="page">
-<h2>Blow the Candle</h2>
+<div id="p2" class="page">
+<h2>Blow Candle</h2>
 
 <div class="candle">
 <div class="wax">
@@ -116,92 +107,84 @@ margin-top:20px;
 <button class="btn" onclick="blow()">Blow</button>
 </div>
 
-<div id="page5" class="page">
-<h2>Catch 10 Hearts to Unlock Memory Heart</h2>
-
-<p id="score">Score: 0 / 10</p>
-
+<div id="p3" class="page">
+<h2>Catch 10 Hearts</h2>
+<p id="score">0 / 10</p>
 <div id="gameArea"></div>
 </div>
 
-<div id="page3" class="page">
+<div id="p4" class="page">
 <h2>Memories</h2>
-
 <img src="photo1.png">
 <img src="photo2.jpeg">
-
-<br>
-<button class="btn" onclick="next(4)">Next</button>
+<button class="btn" onclick="go(5)">Next</button>
 </div>
 
-<div id="page4" class="page">
+<div id="p5" class="page">
 <h2>Music</h2>
-
 <audio controls autoplay loop>
-<source src="song.mp3" type="audio/mpeg">
+<source src="song.mp3">
 </audio>
-
-<br>
-<button class="btn" onclick="next(6)">Final</button>
+<button class="btn" onclick="go(6)">Final</button>
 </div>
 
-<div id="page6" class="page">
-<h2>Restart</h2>
-<button class="btn" onclick="next(2)">Restart Candle</button>
+<div id="p6" class="page">
+<h2>Done</h2>
+<p>Memory complete</p>
 </div>
 
 <script>
-function next(n){
+
+function go(n){
 document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-document.getElementById('page'+n).classList.add('active');
+document.getElementById('p'+n).classList.add('active');
+
+if(n==3){
+startGame();
+}
 }
 
 function blow(){
 document.getElementById("flame").style.display="none";
-setTimeout(()=>next(5),800);
+setTimeout(()=>go(3),800);
 }
 
 /* GAME */
 let score=0;
-let gameRunning=false;
+let running=false;
 
-function spawnHeart(){
+function startGame(){
+if(running) return;
+running=true;
+score=0;
+spawn();
+}
+
+function spawn(){
 if(score>=10){
-document.getElementById("score").innerText="Unlocked Memory Heart";
-setTimeout(()=>next(3),1000);
+setTimeout(()=>go(4),800);
 return;
 }
 
-let heart=document.createElement("div");
-heart.innerHTML="❤";
-heart.classList.add("heart");
+let h=document.createElement("div");
+h.innerHTML="❤";
+h.className="heart";
 
-heart.style.left=Math.random()*80+"%";
-heart.style.top="80%";
+h.style.left=Math.random()*80+"%";
+h.style.top="80%";
 
-heart.onclick=function(){
+h.onclick=function(){
 score++;
-document.getElementById("score").innerText="Score: "+score+" / 10";
-heart.remove();
+document.getElementById("score").innerText=score+" / 10";
+h.remove();
 }
 
-document.getElementById("gameArea").appendChild(heart);
+document.getElementById("gameArea").appendChild(h);
 
-setTimeout(()=>heart.remove(),3000);
-setTimeout(()=>spawnHeart(),1200);
+setTimeout(()=>h.remove(),3000);
+setTimeout(spawn,1200);
 }
 
-function next(n){
-document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-document.getElementById('page'+n).classList.add('active');
-
-if(n===5 && !gameRunning){
-gameRunning=true;
-score=0;
-document.getElementById("score").innerText="Score: 0 / 10";
-spawnHeart();
-}
-}
 </script>
 
 </body>
