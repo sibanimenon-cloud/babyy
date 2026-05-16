@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memory Space</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:#0b0b16;
+color:white;
+text-align:center;
+}
+
+.page{
+display:none;
+padding:30px;
+}
+
+.active{
+display:block;
+}
+
+.btn{
+padding:12px 18px;
+margin-top:20px;
+background:#ff4d6d;
+border:none;
+color:white;
+border-radius:10px;
+}
+
+img{
+width:240px;
+margin:10px;
+border-radius:15px;
+}
+
+.candle{
+width:100%;
+height:60vh;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+}
+
+.wax{
+width:90px;
+height:240px;
+background:#fff3d6;
+border-radius:15px;
+position:relative;
+box-shadow:0 0 25px rgba(255,255,255,0.3);
+}
+
+.flame{
+width:26px;
+height:48px;
+background:orange;
+border-radius:50%;
+position:absolute;
+top:-38px;
+left:50%;
+transform:translateX(-50%);
+animation:flicker 0.8s infinite;
+}
+
+@keyframes flicker{
+0%{transform:translateX(-50%) scale(1);opacity:1;}
+50%{transform:translateX(-50%) scale(1.2);opacity:0.6;}
+100%{transform:translateX(-50%) scale(1);opacity:1;}
+}
+
+/* HEART GAME */
+.heart{
+font-size:30px;
+position:absolute;
+cursor:pointer;
+animation:float 2s linear;
+}
+
+@keyframes float{
+0%{transform:translateY(0);}
+100%{transform:translateY(-400px);opacity:0;}
+}
+
+#gameArea{
+position:relative;
+height:300px;
+overflow:hidden;
+}
+</style>
+</head>
+
+<body>
+
+<div id="page1" class="page active">
+<h1>Your Memory Space</h1>
+<button class="btn" onclick="next(2)">Start</button>
+</div>
+
+<div id="page2" class="page">
+<h2>Blow the Candle</h2>
+
+<div class="candle">
+<div class="wax">
+<div id="flame" class="flame"></div>
+</div>
+</div>
+
+<button class="btn" onclick="blow()">Blow</button>
+</div>
+
+<div id="page3" class="page">
+<h2>Memories</h2>
+
+<img src="photo1.png">
+<img src="photo2.jpeg">
+
+<br>
+<button class="btn" onclick="next(4)">Next</button>
+</div>
+
+<div id="page4" class="page">
+<h2>Music</h2>
+
+<audio controls autoplay loop>
+<source src="song.mp3" type="audio/mpeg">
+</audio>
+
+<br>
+<button class="btn" onclick="next(5)">Final</button>
+</div>
+
+<div id="page5" class="page">
+<h2>Heart Game</h2>
+<p>Click hearts before they disappear</p>
+
+<div id="gameArea"></div>
+
+<button class="btn" onclick="startGame()">Start Game</button>
+</div>
+
+<script>
+function next(n){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.getElementById('page'+n).classList.add('active');
+}
+
+function blow(){
+document.getElementById('flame').style.display='none';
+setTimeout(()=>next(3),800);
+}
+
+/* GAME LOGIC */
+function startGame(){
+spawnHeart();
+}
+
+function spawnHeart(){
+let heart=document.createElement("div");
+heart.innerHTML="❤";
+heart.classList.add("heart");
+heart.style.left=Math.random()*80+"%";
+heart.style.top="80%";
+
+heart.onclick=function(){
+heart.remove();
+}
+
+document.getElementById("gameArea").appendChild(heart);
+
+setTimeout(()=>heart.remove(),2000);
+setTimeout(()=>spawnHeart(),800);
+}
+</script>
+
+</body>
+</html>
