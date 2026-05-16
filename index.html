@@ -38,6 +38,7 @@ margin:10px;
 border-radius:15px;
 }
 
+/* CANDLE */
 .candle{
 width:100%;
 height:60vh;
@@ -76,21 +77,22 @@ animation:flicker 0.8s infinite;
 
 /* HEART GAME */
 .heart{
-font-size:30px;
+font-size:32px;
 position:absolute;
 cursor:pointer;
-animation:float 2s linear;
-}
-
-@keyframes float{
-0%{transform:translateY(0);}
-100%{transform:translateY(-400px);opacity:0;}
+animation:float 3s linear;
 }
 
 #gameArea{
 position:relative;
 height:300px;
 overflow:hidden;
+margin-top:20px;
+}
+
+@keyframes float{
+0%{transform:translateY(0);}
+100%{transform:translateY(-350px);opacity:0;}
 }
 </style>
 </head>
@@ -114,6 +116,14 @@ overflow:hidden;
 <button class="btn" onclick="blow()">Blow</button>
 </div>
 
+<div id="page5" class="page">
+<h2>Catch 10 Hearts to Unlock Memory Heart</h2>
+
+<p id="score">Score: 0 / 10</p>
+
+<div id="gameArea"></div>
+</div>
+
 <div id="page3" class="page">
 <h2>Memories</h2>
 
@@ -132,16 +142,12 @@ overflow:hidden;
 </audio>
 
 <br>
-<button class="btn" onclick="next(5)">Final</button>
+<button class="btn" onclick="next(6)">Final</button>
 </div>
 
-<div id="page5" class="page">
-<h2>Heart Game</h2>
-<p>Click hearts before they disappear</p>
-
-<div id="gameArea"></div>
-
-<button class="btn" onclick="startGame()">Start Game</button>
+<div id="page6" class="page">
+<h2>Restart</h2>
+<button class="btn" onclick="next(2)">Restart Candle</button>
 </div>
 
 <script>
@@ -151,30 +157,50 @@ document.getElementById('page'+n).classList.add('active');
 }
 
 function blow(){
-document.getElementById('flame').style.display='none';
-setTimeout(()=>next(3),800);
+document.getElementById("flame").style.display="none";
+setTimeout(()=>next(5),800);
 }
 
-/* GAME LOGIC */
-function startGame(){
-spawnHeart();
-}
+/* GAME */
+let score=0;
+let gameRunning=false;
 
 function spawnHeart(){
+if(score>=10){
+document.getElementById("score").innerText="Unlocked Memory Heart";
+setTimeout(()=>next(3),1000);
+return;
+}
+
 let heart=document.createElement("div");
 heart.innerHTML="❤";
 heart.classList.add("heart");
+
 heart.style.left=Math.random()*80+"%";
 heart.style.top="80%";
 
 heart.onclick=function(){
+score++;
+document.getElementById("score").innerText="Score: "+score+" / 10";
 heart.remove();
 }
 
 document.getElementById("gameArea").appendChild(heart);
 
-setTimeout(()=>heart.remove(),2000);
-setTimeout(()=>spawnHeart(),800);
+setTimeout(()=>heart.remove(),3000);
+setTimeout(()=>spawnHeart(),1200);
+}
+
+function next(n){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.getElementById('page'+n).classList.add('active');
+
+if(n===5 && !gameRunning){
+gameRunning=true;
+score=0;
+document.getElementById("score").innerText="Score: 0 / 10";
+spawnHeart();
+}
 }
 </script>
 
