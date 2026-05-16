@@ -32,7 +32,7 @@ margin:10px;
 border-radius:15px;
 }
 
-/* candle */
+/* CANDLE */
 .candle{
 height:60vh;
 display:flex;
@@ -67,18 +67,19 @@ animation:flicker 0.8s infinite;
 100%{transform:translateX(-50%) scale(1);}
 }
 
-/* hearts */
+/* GAME */
 .heart{
 font-size:32px;
 position:absolute;
-animation:float 3s linear;
 cursor:pointer;
+animation:float 4s linear;
 }
 
 #gameArea{
 position:relative;
 height:300px;
 overflow:hidden;
+margin-top:20px;
 }
 
 @keyframes float{
@@ -130,7 +131,7 @@ overflow:hidden;
 
 <div id="p6" class="page">
 <h2>Done</h2>
-<p>Memory complete</p>
+<p>Memory completed</p>
 </div>
 
 <script>
@@ -149,7 +150,7 @@ document.getElementById("flame").style.display="none";
 setTimeout(()=>go(3),800);
 }
 
-/* GAME */
+/* GAME LOGIC */
 let score=0;
 let running=false;
 
@@ -157,15 +158,36 @@ function startGame(){
 if(running) return;
 running=true;
 score=0;
+document.getElementById("score").innerText="0 / 10";
 spawn();
 }
 
+function resetGame(){
+score=0;
+document.getElementById("score").innerText="0 / 10";
+}
+
 function spawn(){
+
 if(score>=10){
 setTimeout(()=>go(4),800);
 return;
 }
 
+/* 3 hearts per cycle */
+for(let i=0;i<3;i++){
+createHeart();
+}
+
+/* bomb chance */
+if(Math.random()<0.5){
+createBomb();
+}
+
+setTimeout(spawn,900);
+}
+
+function createHeart(){
 let h=document.createElement("div");
 h.innerHTML="❤";
 h.className="heart";
@@ -181,8 +203,25 @@ h.remove();
 
 document.getElementById("gameArea").appendChild(h);
 
-setTimeout(()=>h.remove(),3000);
-setTimeout(spawn,1200);
+setTimeout(()=>h.remove(),4000);
+}
+
+function createBomb(){
+let b=document.createElement("div");
+b.innerHTML="💣";
+b.className="heart";
+
+b.style.left=Math.random()*80+"%";
+b.style.top="80%";
+
+b.onclick=function(){
+resetGame();
+b.remove();
+}
+
+document.getElementById("gameArea").appendChild(b);
+
+setTimeout(()=>b.remove(),3000);
 }
 
 </script>
